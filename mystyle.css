@@ -1,13 +1,51 @@
-
-body {
-    font-family: Arial, sans-serif;
+/* ============================================================
+   RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
 }
 
+/* ============================================================
+   PAGE
+   ============================================================ */
+html {
+    width: 100%;
+}
 
+body {
+    width: 100%;
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background:
+        radial-gradient(circle at 25% 15%, #d97d2e, transparent 55%),
+        radial-gradient(circle at 80% 85%, #901616, transparent 50%),
+        #245a2f;
+    position: relative;
+    isolation: isolate;
+}
+
+/* Subtle film-grain / scanline overlay */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(92deg, rgb(0 0 0 / .07) 0 2px, transparent 2px 9px),
+        repeating-linear-gradient(2deg, rgb(255 255 255 / .015) 0 1px, transparent 1px 40px);
+    z-index: 0;
+}
+
+/* ============================================================
+   HEADER + NAV
+   ============================================================ */
 header {
+    position: relative;
+    z-index: 2;
     background-color: #ffe6cc;
     padding: 20px;
     border-bottom: 2px solid #e0e0e0;
@@ -30,51 +68,232 @@ nav a {
     font-weight: bold;
 }
 
-
+/* ============================================================
+   CONTENT CARDS
+   ============================================================ */
 .container {
-    display: flex;             
-    justify-content: center;   
-    gap: 20px;                 
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
     padding: 40px 20px;
     max-width: 1100px;
-    margin: 0 auto;            
+    margin: 0 auto;
 }
 
-
 .content-box {
-    flex: 1;                   
+    flex: 1;
     padding: 25px;
-    border-radius: 10px;       
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .box-profile {
-    background-color: #4a90e2; /* Blue */
+    background-color: #4a90e2;
     color: white;
 }
 
 .box-hobbies {
-    background-color: #e0f7fa; /* Light Cyan */
+    background-color: #e0f7fa;
     color: #006064;
 }
 
 .box-goals {
-    background-color: #fce4ec; /* Light Pink */
+    background-color: #fce4ec;
     color: #880e4f;
 }
 
-
 h2 {
     margin-top: 0;
-    border-bottom: 2px solid rgba(0,0,0,0.1);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 10px;
 }
 
 .box-profile h2 {
-    border-bottom-color: rgba(255,255,255,0.3);
+    border-bottom-color: rgba(255, 255, 255, 0.3);
 }
 
 ul {
     padding-left: 20px;
     line-height: 1.6;
+}
+
+/* ============================================================
+   COPY LABEL
+   ============================================================ */
+.copy {
+    position: fixed;
+    top: 140px;               /* ← pushed below header so it doesn't overlap */
+    left: 20px;
+    color: #000;
+    background: rgb(255 255 255 / .7);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 3;
+}
+
+/* ============================================================
+   POLAROID SCENE
+   ============================================================ */
+:root {
+    --table-bg: #2b2118;
+    --table-bg-2: #3a2d22;
+    --polaroid-bg: #faf8f3;
+    --card-w: 260px;
+    --card-h: 330px;
+}
+
+.scene {
+    position: relative;       /* ← anchors absolute polaroids to this box */
+    width: 100%;
+    height: 100vh;            /* full viewport; header scrolls above it */
+    overflow: hidden;
+    padding-top: 40px;        /* keeps top row clear of any fixed UI */
+    z-index: 1;
+}
+
+/* ============================================================
+   POLAROID CARDS
+   ============================================================ */
+.polaroid {
+    position: absolute;
+    width: var(--card-w);
+    padding: 8px 8px 0;
+    background: var(--polaroid-bg);
+    border-radius: 4px;
+    cursor: pointer;
+    transition:
+        transform 0.5s cubic-bezier(.22, 1, .36, 1),
+        box-shadow 0.5s ease,
+        filter 0.4s ease;
+    will-change: transform;
+    transform-origin: center center;
+    top: var(--y, 20px);
+    left: var(--x, 20px);
+
+    --jitter-x: random(-10px, 10px);
+    --jitter-y: random(-10px, 10px);
+    --angle: random(-14deg, 14deg);
+    --shadow-x: random(-6px, 6px);
+    --shadow-y: random(5px, 14px);
+    --shadow-blur: random(10px, 22px);
+
+    transform: translate(var(--jitter-x), var(--jitter-y)) rotate(var(--angle));
+    box-shadow:
+        0 1px 1px rgb(0 0 0 / .15),
+        var(--shadow-x) var(--shadow-y) var(--shadow-blur) rgb(0 0 0 / .4);
+}
+
+.polaroid img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: #ccc;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.polaroid .caption {
+    font-family: "Segoe Script", "Bradley Hand", "Comic Sans MS", cursive;
+    font-size: .75rem;
+    color: #4a3f35;
+    text-align: center;
+    padding: 8px 3px 10px;
+    line-height: 1.2;
+    min-height: 2.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.polaroid:hover,
+.polaroid:focus-visible {
+    transform: translate(0, -6px) rotate(0deg) scale(1.08);
+    box-shadow:
+        0 2px 2px rgb(0 0 0 / .2),
+        0 22px 44px rgb(0 0 0 / .55);
+    z-index: 999;
+    outline: none;
+    filter: brightness(1.03);
+}
+
+.polaroid:focus-visible {
+    outline: 2px solid #e8c07a;
+    outline-offset: 4px;
+}
+
+/* Fallback when CSS random() is not supported */
+.no-random .polaroid {
+    --jitter-x: 0px;
+    --jitter-y: 0px;
+    --angle: var(--fallback-angle, 0deg);
+    --shadow-x: 0px;
+    --shadow-y: 8px;
+    --shadow-blur: 14px;
+}
+
+/* ============================================================
+   BADGE
+   ============================================================ */
+.badge {
+    position: fixed;
+    bottom: .8rem;
+    right: .8rem;
+    font-size: .7rem;
+    padding: .4rem .8rem;
+    border-radius: 999px;
+    background: rgb(0 0 0 / .55);
+    color: #f3e9d2;
+    backdrop-filter: blur(6px);
+    font-family: ui-monospace, monospace;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.badge.ok {
+    background: rgb(30 90 40 / .8);
+}
+
+.badge.fallback {
+    background: rgb(217 36 36 / .9);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+    :root {
+        --card-w: 130px;
+        --card-h: 190px;
+    }
+}
+
+@media (max-width: 600px) {
+    :root {
+        --card-w: 105px;
+        --card-h: 155px;
+    }
+
+    .polaroid .caption {
+        font-size: .65rem;
+        padding: 6px 2px 8px;
+    }
+
+    .container {
+        flex-direction: column;
+        padding: 20px 15px;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .copy {
+        top: 110px;
+        font-size: 11px;
+    }
 }
